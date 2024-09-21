@@ -15,23 +15,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0  # Désactive le clonage superficiel pour une analyse plus complète
+
       - name: Set up JDK 17
         uses: actions/setup-java@v1
         with:
           java-version: 17
+
       - name: Cache SonarQube packages
         uses: actions/cache@v1
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+
       - name: Cache Maven packages
         uses: actions/cache@v1
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
@@ -56,3 +60,20 @@ jobs:
 
       - name: Logout from Docker Hub
         run: docker logout
+
+      # Nouvelle étape pour envoyer l'email avec le statut du job
+      - name: Install msmtp
+        run: sudo apt-get install -y msmtp
+
+      - name: Send Email Notification
+        if: always()  # Cette étape s'exécute toujours, que le job réussisse ou échoue
+        run: |
+          # Envoyer l'email directement via msmtp
+          echo -e "Subject: Résultat du Workflow GitHub Actions\n\nLe workflow a été exécuté avec le statut : ${{ job.status }}" | \
+          msmtp --host=smtp.gmail.com \
+                --port=587 \
+                --tls=on \
+                --auth=on \
+                --user=${{ secrets.GMAIL_USERNAME }} \
+                --passwordeval="echo ${{ secrets.GMAIL_APP_PASSWORD }}" \
+                ${{ secrets.GMAIL_RECIPIENT }}
