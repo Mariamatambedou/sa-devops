@@ -76,4 +76,5 @@ jobs:
                 --auth=on \
                 --user=${{ secrets.GMAIL_USERNAME }} \
                 --passwordeval="echo ${{ secrets.GMAIL_APP_PASSWORD }}" \
+                --from=${{ secrets.GMAIL_USERNAME }} \
                 ${{ secrets.GMAIL_RECIPIENT }}
