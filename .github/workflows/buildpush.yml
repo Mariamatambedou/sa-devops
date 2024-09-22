@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Désactive le clonage superficiel pour une analyse plus complète
+          fetch-depth: 0
 
       - name: Set up JDK 17
         uses: actions/setup-java@v1
@@ -61,14 +61,11 @@ jobs:
       - name: Logout from Docker Hub
         run: docker logout
 
-      # Nouvelle étape pour envoyer l'email avec le statut du job
-      - name: Install msmtp
-        run: sudo apt-get install -y msmtp
-
+      # Envoyer l'e-mail directement via Gmail
       - name: Send Email Notification
-        if: always()  # Cette étape s'exécute toujours, que le job réussisse ou échoue
+        if: always()
         run: |
-          # Envoyer l'email directement via msmtp
+          sudo apt-get install -y msmtp
           echo -e "Subject: Résultat du Workflow GitHub Actions\n\nLe workflow a été exécuté avec le statut : ${{ job.status }}" | \
           msmtp --host=smtp.gmail.com \
                 --port=587 \
@@ -77,4 +74,4 @@ jobs:
                 --user=${{ secrets.GMAIL_USERNAME }} \
                 --passwordeval="echo ${{ secrets.GMAIL_APP_PASSWORD }}" \
                 --from=${{ secrets.GMAIL_USERNAME }} \
-                ${{ secrets.GMAIL_RECIPIENT }}
+                ${{ secrets.GMAIL_USERNAME }}  # Envoyez à votre propre adresse Gmail
