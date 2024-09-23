@@ -42,7 +42,6 @@ jobs:
           curl -X POST \
           -H 'Content-Type: application/json' \
           -d '{"text": "🚀 Le build a commencé. Initié par : '${{ github.actor }}'"}' \
-          --insecure \
           "${{ secrets.CHAT_WEBHOOK_URL }}"
 
       - name: Build and analyze
