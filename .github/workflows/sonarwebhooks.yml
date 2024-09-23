@@ -37,13 +37,10 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       # Notification de démarrage
-      - name: Send Start Notification to Google Chat
+      - name: Test Google Chat Webhook Connectivity
         run: |
-          curl -X POST \
-          -H 'Content-Type: application/json' \
-          -d '{"text": "🚀 Le build a commencé. Initié par : '${{ github.actor }}'"}' \
-          --insecure \
-          ${{ secrets.CHAT_WEBHOOK_URL }}
+          curl -I -X GET ${{ secrets.CHAT_WEBHOOK_URL }}
+      
 
       - name: Build and analyze
         env:
