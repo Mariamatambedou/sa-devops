@@ -41,7 +41,7 @@ jobs:
         run: |
           curl -X POST \
           -H 'Content-Type: application/json' \
-          -d '{"text": "🚀 Le build a commencé. Initié par : '${{ github.actor }}'"}' \
+          -d "{\"text\": \"🚀 Le build a commencé. Initié par : '${{ github.actor }}'\"}" \
           ${{ secrets.CHAT_WEBHOOK_URL }}
 
       - name: Build and analyze
@@ -74,14 +74,14 @@ jobs:
         if: always()
         run: |
           STATUS_ICON=""
-          if [[ "${{ job.status }}" == 'success' ]]; then
+          if [ "${{ job.status }}" == 'success' ]; then
             STATUS_ICON="✅"
-          elif [[ "${{ job.status }}" == 'failure' ]]; then
+          elif [ "${{ job.status }}" == 'failure' ]; then
             STATUS_ICON="❌"
           else
             STATUS_ICON="⚠️"
           fi
           curl -X POST \
           -H 'Content-Type: application/json' \
-          -d '{"text": "'"${STATUS_ICON} Le build est terminé avec le statut : ${{ job.status }}. Initié par : ${{ github.actor }}'"'"}' \
+          -d "{\"text\": \"${STATUS_ICON} Le build est terminé avec le statut : ${{ job.status }}. Initié par : ${{ github.actor }}\"}" \
           ${{ secrets.CHAT_WEBHOOK_URL }}
