@@ -1,4 +1,4 @@
-name: Build, Test, Push Docker Image and SonarQube Scan
+name: Build, Test, Push Docker Image, SonarQube Scan and Notification
 
 on:
   push:
